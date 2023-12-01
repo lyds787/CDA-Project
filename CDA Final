@@ -48,6 +48,8 @@ switch (ALUControl) {
    
 /* instruction fetch */
 /* 10 Points
+
+
 int instruction_fetch(unsigned PC,unsigned *Mem,unsigned
 *instruction)
 ● Mem has already been populated, and PC will be initialize at the starting

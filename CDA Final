@@ -84,19 +84,19 @@ unsigned op, // instruction [31-26]
 
 void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1,unsigned *r2, unsigned *r3, unsigned *funct, unsigned *offset, unsigned *jsec)
 {
-*op = (instruction >> 26);    //check again
-
-*r1 = (instruction >> 21) & 0b11111;
-
-*r2 = (instruction >> 16) & 0b11111;
-
-*r3 = (instruction >> 11) & 0b11111;
-
-*funct = instruction & (0b111111);
-
-*offset = instruction & (0b1111111111111111);
-
-*jsec = instruction & (0b11111111111111111111111111);
+    *op = (instruction >> 26);    //check again
+    
+    *r1 = (instruction >> 21) & 0b11111;
+    
+    *r2 = (instruction >> 16) & 0b11111;
+    
+    *r3 = (instruction >> 11) & 0b11111;
+    
+    *funct = instruction & (0b111111);
+    
+    *offset = instruction & (0b1111111111111111);
+    
+    *jsec = instruction & (0b11111111111111111111111111);
 
 }
 
@@ -256,10 +256,10 @@ switch (op) {
 /* 5 Points */
 void read_register(unsigned r1,unsigned r2,unsigned *Reg,unsigned *data1,unsigned *data2)
 {
-// Read data from the first register
-*data1 = Reg[r1];
-// Read data from the second register
-*data2 = Reg[r2];
+    // Read data from the first register
+    *data1 = Reg[r1];
+    // Read data from the second register
+    *data2 = Reg[r2];
 }
 
 /* Sign Extend */
@@ -271,7 +271,7 @@ bits.
 */
 void sign_extend(unsigned offset,unsigned *extended_value)
 {
-*extended_value = (offset & 0x00008000) ? (offset | 0xffff0000) : offset;
+    *extended_value = (offset & 0x00008000) ? (offset | 0xffff0000) : offset;
 }
 
 

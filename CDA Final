@@ -94,6 +94,10 @@ void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1,unsi
 
 *funct = instruction & (0b111111);
 
+*offset = instruction & (0b1111111111111111);
+
+*jsec = instruction & (0b11111111111111111111111111);
+
 }
 
 

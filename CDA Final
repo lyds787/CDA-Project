@@ -148,15 +148,15 @@ char RegWrite;
 int halt = 0;
 switch (ALUControl) {
     case 000:
-        controls->RegDst = 0;
+        controls->RegDst = 1;
         controls->Jump = 0;
         controls->Branch = 0;
         controls->MemRead = 0;
         controls->MemtoReg = 0;
-        controls->ALUOp = 0;
+        controls->ALUOp = 7;
         controls->MemWrite = 0;
         controls->ALUSrc = 0;
-        controls->RegWrite = 0;
+        controls->RegWrite = 1;
             break;
     case 1:
         controls->RegDst = 0;
@@ -164,22 +164,22 @@ switch (ALUControl) {
         controls->Branch = 0;
         controls->MemRead = 0;
         controls->MemtoReg = 0;
-        controls->ALUOp = 0;
+        controls->ALUOp = 5;
         controls->MemWrite = 0;
-        controls->ALUSrc = 0;
-        controls->RegWrite = 0;
+        controls->ALUSrc = 1;
+        controls->RegWrite = 1;
 
             break;
     case 2:
         controls->RegDst = 0;
         controls->Jump = 0;
         controls->Branch = 0;
-        controls->MemRead = 0;
-        controls->MemtoReg = 0;
+        controls->MemRead = 1;
+        controls->MemtoReg = 1;
         controls->ALUOp = 0;
         controls->MemWrite = 0;
-        controls->ALUSrc = 0;
-        controls->RegWrite = 0;
+        controls->ALUSrc = 1;
+        controls->RegWrite = 1;
 
           
             break;

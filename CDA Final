@@ -38,9 +38,9 @@ switch (ALUControl) {
             *ALUresult = ~A;
             break;
     }
-    if (*ALUresult == 0) {    // if ALUresult is 0, set Zero to 1
+    if (*ALUresult == 0) {    // if *ALUresult is 0, set *Zero to 1
         *Zero = 1;
-    } else {                  // if ALUresult is 1, set Zero to 0
+    } else {                  // if *ALUresult is 1, set *Zero to 0
         *Zero = 0;
     }
 }

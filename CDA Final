@@ -47,17 +47,7 @@ switch (ALUControl) {
             
    
 /* instruction fetch */
-/* 10 Points
-
-int instruction_fetch(unsigned PC,unsigned *Mem,unsigned
-*instruction)
-● Mem has already been populated, and PC will be initialize at the starting
-address (0x4000).
-● Check for word alignment.
-● Use “PC >> 2” to get the array index.
-7/18
-
-*/
+/* 10 Points */
 int instruction_fetch(unsigned PC,unsigned *Mem,unsigned *instruction)
 {
                                     // Check for word alignment

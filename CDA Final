@@ -69,6 +69,17 @@ int instruction_fetch(unsigned PC,unsigned *Mem,unsigned *instruction)
 /* 10 Points 
 - Partition instruction into several parts (op, r1, r2, r3, funct, offset, jsec).
 - Read lines 41 to 47 of spimcore.c for more information
+
+40 to 48
+// Register output
+unsigned data1,data2;
+// sign extend
+unsigned extended_value;
+// ALU result
+unsigned ALUresult;
+char Zero;
+// data read from Memory
+unsigned memdata;
 */
 void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1,unsigned *r2, unsigned *r3, unsigned *funct, unsigned *offset, unsigned *jsec)
 {

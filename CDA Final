@@ -184,14 +184,14 @@ switch (ALUControl) {
           
             break;
     case 3:
-        controls->RegDst = 0;
+        controls->RegDst = 2;
         controls->Jump = 0;
         controls->Branch = 0;
         controls->MemRead = 0;
-        controls->MemtoReg = 0;
+        controls->MemtoReg = 2;
         controls->ALUOp = 0;
-        controls->MemWrite = 0;
-        controls->ALUSrc = 0;
+        controls->MemWrite = 1;
+        controls->ALUSrc = 1;
         controls->RegWrite = 0;
 
             break;
@@ -201,57 +201,45 @@ switch (ALUControl) {
         controls->Branch = 0;
         controls->MemRead = 0;
         controls->MemtoReg = 0;
-        controls->ALUOp = 0;
+        controls->ALUOp = 2;
         controls->MemWrite = 0;
-        controls->ALUSrc = 0;
-        controls->RegWrite = 0;
+        controls->ALUSrc = 1;
+        controls->RegWrite = 1;
 
             break;
     case 5:
-        controls->RegDst = 0;
+        controls->RegDst = 2;
         controls->Jump = 0;
-        controls->Branch = 0;
+        controls->Branch = 1;
         controls->MemRead = 0;
-        controls->MemtoReg = 0;
+        controls->MemtoReg = 2;
         controls->ALUOp = 0;
         controls->MemWrite = 0;
-        controls->ALUSrc = 0;
+        controls->ALUSrc = 1;
         controls->RegWrite = 0;
 
             break;
     case 6:
         controls->RegDst = 0;
         controls->Jump = 0;
-        controls->Branch = 0;
+        controls->Branch = 1;
         controls->MemRead = 0;
         controls->MemtoReg = 0;
-        controls->ALUOp = 0;
+        controls->ALUOp = 6;
         controls->MemWrite = 0;
-        controls->ALUSrc = 0;
+        controls->ALUSrc = 1;
         controls->RegWrite = 0;
 
             break;
     case 7:       
-        controls->RegDst = 0;
-        controls->Jump = 0;
-        controls->Branch = 0;
-        controls->MemRead = 0;
-        controls->MemtoReg = 0;
+        controls->RegDst = 2;
+        controls->Jump = 1;
+        controls->Branch = 2;
+        controls->MemRead = 2;
+        controls->MemtoReg = 2;
         controls->ALUOp = 0;
         controls->MemWrite = 0;
-        controls->ALUSrc = 0;
-        controls->RegWrite = 0;
-
-            break;
-    case 8;
-        controls->RegDst = 0;
-        controls->Jump = 0;
-        controls->Branch = 0;
-        controls->MemRead = 0;
-        controls->MemtoReg = 0;
-        controls->ALUOp = 0;
-        controls->MemWrite = 0;
-        controls->ALUSrc = 0;
+        controls->ALUSrc = 2;
         controls->RegWrite = 0;
 
             break;

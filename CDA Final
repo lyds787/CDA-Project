@@ -297,7 +297,20 @@ void write_register(unsigned r2,unsigned r3,unsigned memdata,unsigned ALUresult,
 }
 
 /* PC update */
-/* 10 Points */
+/* 10 Points
+
+void PC_update(unsigned jsec,unsigned extended_value,char
+Branch,char Jump,char Zero,unsigned *PC)
+● PC = PC + 4.
+● Take note of Branch and Jump.
+● Zero and Branch tell to branch or not.
+● For jumps: Left shift bits of jsec by 2 and use upper 4 bits of PC
+
+
+
+
+
+*/
 void PC_update(unsigned jsec,unsigned extended_value,char Branch,char Jump,char Zero,unsigned *PC)
 {
 

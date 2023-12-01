@@ -26,10 +26,10 @@ switch (ALUControl) {
                 *ALUresult = 0;
             break;
     case 4:
-        *ALUresult = A & B;
+        *ALUresult = A & B;    //AND
             break;
     case 5:
-        *ALUresult = A | B;
+        *ALUresult = A | B;    //XOR
             break;
     case 6:
 

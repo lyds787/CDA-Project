@@ -276,14 +276,21 @@ void sign_extend(unsigned offset,unsigned *extended_value)
 
 
 /* ALU operations */
-/* 10 Points */
+/* 10 Points 
+- This sets the parameters for the ALU’s A, B, and ALUControl inputs.
+- If this is an R-type instruction, look at funct.
+- Call ALU() function at the end
+*/
 int ALU_operations(unsigned data1,unsigned data2,unsigned extended_value,unsigned funct,char ALUOp,char ALUSrc,unsigned *ALUresult,char *Zero)
 {
 
 }
 
 /* Read / Write Memory */
-/* 10 Points */
+/* 10 Points 
+- If MemWrite = 1, write to memory.
+- If MemRead = 1, read from memory
+*/
 int rw_memory(unsigned ALUresult,unsigned data2,char MemWrite,char MemRead,unsigned *memdata,unsigned *Mem)
 {
 

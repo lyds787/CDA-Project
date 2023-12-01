@@ -32,7 +32,7 @@ switch (ALUControl) {
         *ALUresult = A | B;    //XOR
             break;
     case 6:
-       *ALUresult = (B << 16);
+       *ALUresult = (B << 16);      //  SHIFT Not confident!
             break;
         case 7:                //NOT
             *ALUresult = ~A;

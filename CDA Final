@@ -12,12 +12,19 @@ switch (ALUControl) {
             *ALUresult = A - B;  //subtraction
             break;
     case 2:
-            *ALUresult;  //less than
+            int A = A;          // less than int
+            int B = B;
+            if (A < B)
+                *ALUresult = 1;
+            else
+                *ALUresult = 0;
             break;
     case 3:
-
+            if (A < B)        // less than unsigned
+                *ALUresult = 1;
+            else
+                *ALUresult = 0;
             break;
-
     case 4:
         *ALUresult = A & B;
             break;

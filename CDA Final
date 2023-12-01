@@ -90,7 +90,9 @@ void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1,unsi
 
 *r2 = (instruction >> 16) & 0b11111;
 
-*r3
+*r3 = (instruction >> 11) & 0b11111;
+
+*funct = instruction & (0b111111);
 
 }
 

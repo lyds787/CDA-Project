@@ -290,7 +290,10 @@ int rw_memory(unsigned ALUresult,unsigned data2,char MemWrite,char MemRead,unsig
 }
 
 /* Write Register */
-/* 10 Points */
+/* 10 Points 
+- If RegWrite == 1 and MemtoReg == 1, then bring data from memory.
+- If RegWrite == 1 and MemtoReg == 0, then bring data from ALUresult
+*/
 void write_register(unsigned r2,unsigned r3,unsigned memdata,unsigned ALUresult,char RegWrite,char RegDst,char MemtoReg,unsigned *Reg)
 {
 

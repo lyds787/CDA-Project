@@ -146,8 +146,8 @@ char RegWrite;
 
 
 int halt = 0;
-switch (ALUControl) {
-    case 000:
+switch (op) {
+    case 0:
         controls->RegDst = 1;
         controls->Jump = 0;
         controls->Branch = 0;

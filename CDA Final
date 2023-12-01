@@ -6,13 +6,13 @@ void ALU(unsigned A,unsigned B,char ALUControl,unsigned *ALUresult,char *Zero)
 {
 switch (ALUControl) {
     case 0:
-
+            *ALUresult = A + B;  //addition
             break;
     case 1:
-
+            *ALUresult = A - B;  //subtraction
             break;
     case 2:
-
+            *ALUresult;  //less than
             break;
     case 3:
 

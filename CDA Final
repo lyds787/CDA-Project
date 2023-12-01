@@ -145,7 +145,7 @@ char RegWrite;
 */
 
 
-
+int halt = 0;
 switch (ALUControl) {
     case 0:
            
@@ -164,14 +164,18 @@ switch (ALUControl) {
      
             break;
     case 5:
-  break;
-    case 6:
-   break;
-        case 7:              
-       
             break;
+    case 6:
+            break;
+    case 7:              
+            break;
+    case 8;
+            break;
+    default:
+            halt = 1;
     }
 
+    return halt;
 }
 
 

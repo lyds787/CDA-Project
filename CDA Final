@@ -104,7 +104,7 @@ void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1,unsi
 
 
 
-
+/*
 
 void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1, unsigned *r2, unsigned *r3,
                             unsigned *funct, unsigned *offset, unsigned *jsec) {
@@ -117,7 +117,7 @@ void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1, uns
     *jsec = instruction & (0b11111111111111111111111111);
 }
 
-
+*/
 
 
 

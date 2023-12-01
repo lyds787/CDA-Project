@@ -4,9 +4,36 @@
 /* 10 Points */
 void ALU(unsigned A,unsigned B,char ALUControl,unsigned *ALUresult,char *Zero)
 {
-hh
-}
+switch (ALUControl) {
+    case 0:
 
+            break;
+    case 1:
+
+            break;
+    case 2:
+
+            break;
+    case 3:
+
+            break;
+
+    case 4:
+
+            break;
+    case 5:
+
+            break;
+    case 6:
+
+            break;
+    case 7:
+
+            break;
+
+     
+            
+   
 /* instruction fetch */
 /* 10 Points */
 int instruction_fetch(unsigned PC,unsigned *Mem,unsigned *instruction)

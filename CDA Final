@@ -263,7 +263,13 @@ void read_register(unsigned r1,unsigned r2,unsigned *Reg,unsigned *data1,unsigne
 }
 
 /* Sign Extend */
-/* 10 Points */
+/* 10 Points 
+- The 16th bit is the sign bit.
+- Recall during the partitioning function the offset has all zeros in the upper 16
+bits.
+11/18
+
+*/
 void sign_extend(unsigned offset,unsigned *extended_value)
 {
 

@@ -256,7 +256,10 @@ switch (op) {
 /* 5 Points */
 void read_register(unsigned r1,unsigned r2,unsigned *Reg,unsigned *data1,unsigned *data2)
 {
-
+// Read data from the first register
+*data1 = Reg[r1];
+// Read data from the second register
+*data2 = Reg[r2];
 }
 
 /* Sign Extend */

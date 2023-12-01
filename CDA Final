@@ -129,6 +129,7 @@ void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1, uns
 /* 15 Points */
 int instruction_decode(unsigned op,struct_controls *controls)
 {
+/*
 typedef struct
 {
 char RegDst;
@@ -141,7 +142,8 @@ char MemWrite;
 char ALUSrc;
 char RegWrite;
 }struct_controls;
-}
+*/
+
 
 
 switch (ALUControl) {
@@ -170,7 +172,7 @@ switch (ALUControl) {
             break;
     }
 
-
+}
 
 
 

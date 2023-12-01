@@ -34,7 +34,7 @@ switch (ALUControl) {
     case 6:
        *ALUresult = (value << 16);
             break;
-        case 7:    ///NOT
+        case 7:                //NOT
             *ALUresult = ~A;
             break;
 

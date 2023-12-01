@@ -313,7 +313,7 @@ Branch,char Jump,char Zero,unsigned *PC)
 */
 void PC_update(unsigned jsec,unsigned extended_value,char Branch,char Jump,char Zero,unsigned *PC)
 {
-
+    *PC += 4;
 }
 #define SPIMCORE
 #endif

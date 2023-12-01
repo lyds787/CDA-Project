@@ -19,7 +19,7 @@ switch (ALUControl) {
             break;
 
     case 4:
-
+        *ALUresult = A & B;
             break;
     case 5:
 

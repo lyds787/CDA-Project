@@ -271,13 +271,9 @@ bits.
 */
 void sign_extend(unsigned offset,unsigned *extended_value)
 {
-if (offset & 32768) {
-    *extended_value = offset | 429401760;
-}else if {
-    *extended_value = offset;
+*extended_value = (offset & 0x00008000) ? (offset | 0xffff0000) : offset;
 }
-}
-//////////////////////////////////*extended_value = (offset & 0x00008000) ? (offset | 0xffff0000) : offset;
+
 
 /* ALU operations */
 /* 10 Points */

@@ -313,7 +313,22 @@ Branch,char Jump,char Zero,unsigned *PC)
 */
 void PC_update(unsigned jsec,unsigned extended_value,char Branch,char Jump,char Zero,unsigned *PC)
 {
-    *PC += 4;
+*PC += 4;
+
+//////// If Jump is true (1), update the program counter based on the jump target
+if (Jump == 1)
+{
+    //////// Set the program counter to the jump target shifted left by 2 bits
+    //////// ORed with the upper four bits of the original program counter
+    *PC = (jsec << 2) | (*PC & 0xf0000000);
+}
+
+/////////// If both Zero and Branch are true (1), update the program counter based on the sign-extended value
+if (Zero == 1 && Branch == 1)
+{
+    ////////// Add the sign-extended value shifted left by two bits to the program counter
+    *PC += (extended_value << 2);
+}
 }
 #define SPIMCORE
 #endif

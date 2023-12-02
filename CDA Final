@@ -284,6 +284,61 @@ void sign_extend(unsigned offset,unsigned *extended_value)
 int ALU_operations(unsigned data1,unsigned data2,unsigned extended_value,unsigned funct,char ALUOp,char ALUSrc,unsigned *ALUresult,char *Zero)
 {
 
+
+
+
+int ALU_operations(unsigned data1, unsigned data2, unsigned extended_value, unsigned funct, char ALUOp, char ALUSrc, unsigned *ALUresult, char *Zero) 
+{
+    unsigned operand_A, operand_B;
+
+    // Select operands based on ALUSrc
+    operand_A = (ALUSrc == 0) ? data1 : extended_value;
+    operand_B = data2;
+
+    // Check if R-type instruction and update ALUOp based on funct
+    if (ALUOp == 7) 
+{
+        switch (funct) 
+{
+            case 32:  // ADD
+                ALUOp = ADD;
+                break;
+            case 34:  // SUBTRACT
+                ALUOp = SUBTRACT;
+                break;
+            case 36:  // AND
+                ALUOp = AND;
+                break;
+            case 37:  // OR
+                ALUOp = OR;
+                break;
+            case 38:  // XOR
+                ALUOp = XOR;
+                break;
+            case 39:  // NOR
+                ALUOp = NOR;
+                break;
+            case 42:  // SLT
+                ALUOp = SLT;
+                break;
+            case 24:  // MULT
+                ALUOp = MULT;
+                break;
+            default:
+                return 1;
+        }
+    }
+
+    // Call ALU function
+    *ALUresult = ALU(operand_A, operand_B, ALUOp, Zero);
+
+    return 0;
+}
+
+
+
+
+
 }
 
 
@@ -296,15 +351,13 @@ int ALU_operations(unsigned data1,unsigned data2,unsigned extended_value,unsigne
 
 
 
-/* ALU operations: 10 Points by Poojan */
 
-// Perform ALU operations based on the input parameters
 int ALU_operations(unsigned data1, unsigned data2, unsigned extended_value, unsigned funct, char ALUOp, char ALUSrc, unsigned *ALUresult, char *Zero) {
 
-    // If ALUSrc is 1, use the extended value as data2
-    if (ALUSrc == 1) {
+    if (ALUSrc == 1) 
+{
         data2 = extended_value;
-    }
+}
 
     // Check the ALUOp value for R-type instructions
     if (ALUOp == 7) {
@@ -353,11 +406,11 @@ int ALU_operations(unsigned data1, unsigned data2, unsigned extended_value, unsi
         ALU(data1, data2, ALUOp, ALUresult, Zero);
 
     } else {
-        // Perform ALU operation for other instruction types
+      
         ALU(data1, data2, ALUOp, ALUresult, Zero);
     }
 
-    // Return 0 for successful execution
+ 
     return 0;
 }
 

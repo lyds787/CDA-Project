@@ -468,6 +468,38 @@ void write_register(unsigned r2,unsigned r3,unsigned memdata,unsigned ALUresult,
 }
 }
 
+
+
+int rw_memory(unsigned ALUresult,unsigned data2,char MemWrite,char MemRead,unsigned *memdata,unsigned *Mem)
+{
+
+    // Check for invalid address
+    if ((MemWrite || MemRead) && ALUresult % 4 != 0) {
+        // Invalid address, return a halt condition
+        return 1;
+    }
+
+    // Memory Write
+    if (MemWrite && (ALUresult % 4) == 0) {
+        Mem[ALUresult >> 2] = data2;
+    }
+
+    // Memory Read
+    if (MemRead && (ALUresult % 4) == 0) {
+        *memdata = Mem[ALUresult >> 2];
+    }
+
+    // Successful execution
+    return 0;
+}
+
+
+
+
+
+
+
+
 /* PC update */
 /* 10 Points
 

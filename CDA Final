@@ -297,57 +297,68 @@ int ALU_operations(unsigned data1,unsigned data2,unsigned extended_value,unsigne
 
 
 /* ALU operations: 10 Points by Poojan */
-int ALU_operations(unsigned data1,unsigned data2,unsigned extended_value,unsigned funct,char ALUOp,char ALUSrc,unsigned *ALUresult,char *Zero){
 
-    if(ALUSrc == 1) data2 = extended_value;
+// Perform ALU operations based on the input parameters
+int ALU_operations(unsigned data1, unsigned data2, unsigned extended_value, unsigned funct, char ALUOp, char ALUSrc, unsigned *ALUresult, char *Zero) {
 
-    if(ALUOp == 7){
+    // If ALUSrc is 1, use the extended value as data2
+    if (ALUSrc == 1) {
+        data2 = extended_value;
+    }
 
-        switch (funct){
+    // Check the ALUOp value for R-type instructions
+    if (ALUOp == 7) {
+
+        // Determine the specific ALU operation based on the function code (funct) for R-type instructions
+        switch (funct) {
 
             case 4:
-                ALUOp = 6;
+                ALUOp = 6; // Set ALUOp to branch equal
                 break;
-            
+
             case 32:
-                ALUOp = 0;
+                ALUOp = 0; // Set ALUOp to add
                 break;
 
             case 34:
-                ALUOp = 1;
+                ALUOp = 1; // Set ALUOp to subtract
                 break; 
 
             case 36:
-                ALUOp = 4;
+                ALUOp = 4; // Set ALUOp to AND
                 break;
 
             case 37:
-                ALUOp = 5;
+                ALUOp = 5; // Set ALUOp to OR
                 break;
             
             case 39:
-                ALUOp = 7;
+                ALUOp = 7; // Set ALUOp to set less than (signed)
                 break;
             
             case 42:
-                ALUOp = 2;
+                ALUOp = 2; // Set ALUOp to set less than (unsigned)
                 break;
             
             case 43:
-                ALUOp = 3;
+                ALUOp = 3; // Set ALUOp to NOR
                 break;
             
             default:
-                return 1;
+                return 1; // Return 1 for unsupported function code
 
         }
         
+        // Perform ALU operation for R-type instruction
         ALU(data1, data2, ALUOp, ALUresult, Zero);
 
-    } else ALU(data1, data2, ALUOp, ALUresult, Zero);
+    } else {
+        // Perform ALU operation for other instruction types
+        ALU(data1, data2, ALUOp, ALUresult, Zero);
+    }
 
+    // Return 0 for successful execution
     return 0;
-
 }
 
 

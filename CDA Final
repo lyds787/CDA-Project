@@ -72,6 +72,9 @@ int instruction_fetch(unsigned PC,unsigned *Mem,unsigned *instruction)
 
 /*** DATAPATH Signals ***/
 // names of instruction sections
+
+
+/*
 unsigned instruction;
 unsigned op, // instruction [31-26]
     r1, // instruction [25-21]
@@ -80,7 +83,7 @@ unsigned op, // instruction [31-26]
     funct, // instruction [5-0]
     offset, // instruction [15-0]
     jsec; // instruction [25-0]
-
+*/
 
 void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1,unsigned *r2, unsigned *r3, unsigned *funct, unsigned *offset, unsigned *jsec)
 {
@@ -127,6 +130,7 @@ void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1, uns
 
 /* instruction decode */
 /* 15 Points */
+
 int instruction_decode(unsigned op,struct_controls *controls)
 {
 /*
@@ -281,10 +285,9 @@ void sign_extend(unsigned offset,unsigned *extended_value)
 - If this is an R-type instruction, look at funct.
 - Call ALU() function at the end
 */
-int ALU_operations(unsigned data1,unsigned data2,unsigned extended_value,unsigned funct,char ALUOp,char ALUSrc,unsigned *ALUresult,char *Zero)
-{
 
 
+/*
 
 
 int ALU_operations(unsigned data1, unsigned data2, unsigned extended_value, unsigned funct, char ALUOp, char ALUSrc, unsigned *ALUresult, char *Zero) 
@@ -343,7 +346,7 @@ int ALU_operations(unsigned data1, unsigned data2, unsigned extended_value, unsi
 
 
 
-
+*/
 
 
 
@@ -440,6 +443,25 @@ int ALU_operations(unsigned data1, unsigned data2, unsigned extended_value, unsi
 int rw_memory(unsigned ALUresult,unsigned data2,char MemWrite,char MemRead,unsigned *memdata,unsigned *Mem)
 {
 
+    // Check for invalid address
+    if ((MemWrite || MemRead) && ALUresult % 4 != 0) {
+        // Invalid address, return a halt condition
+        return 1;
+    }
+
+    // Memory Write
+    if (MemWrite && (ALUresult % 4) == 0) {
+        Mem[ALUresult >> 2] = data2;
+    }
+
+    // Memory Read
+    if (MemRead && (ALUresult % 4) == 0) {
+        *memdata = Mem[ALUresult >> 2];
+    }
+
+    // Successful execution
+    return 0;
+
 }
 
 /* Write Register */
@@ -466,32 +488,11 @@ void write_register(unsigned r2,unsigned r3,unsigned memdata,unsigned ALUresult,
     }
 ///////////////////////////////////////////////////
 }
-}
 
 
 
-int rw_memory(unsigned ALUresult,unsigned data2,char MemWrite,char MemRead,unsigned *memdata,unsigned *Mem)
-{
 
-    // Check for invalid address
-    if ((MemWrite || MemRead) && ALUresult % 4 != 0) {
-        // Invalid address, return a halt condition
-        return 1;
-    }
 
-    // Memory Write
-    if (MemWrite && (ALUresult % 4) == 0) {
-        Mem[ALUresult >> 2] = data2;
-    }
-
-    // Memory Read
-    if (MemRead && (ALUresult % 4) == 0) {
-        *memdata = Mem[ALUresult >> 2];
-    }
-
-    // Successful execution
-    return 0;
-}
 
 
 
@@ -505,10 +506,10 @@ int rw_memory(unsigned ALUresult,unsigned data2,char MemWrite,char MemRead,unsig
 
 void PC_update(unsigned jsec,unsigned extended_value,char
 Branch,char Jump,char Zero,unsigned *PC)
-● PC = PC + 4.
-● Take note of Branch and Jump.
-● Zero and Branch tell to branch or not.
-● For jumps: Left shift bits of jsec by 2 and use upper 4 bits of PC
+? PC = PC + 4.
+? Take note of Branch and Jump.
+? Zero and Branch tell to branch or not.
+? For jumps: Left shift bits of jsec by 2 and use upper 4 bits of PC
 
 
 
@@ -533,5 +534,4 @@ if (Zero == 1 && Branch == 1)
     *PC += (extended_value << 2);
 }
 }
-#define SPIMCORE
-#endif
+

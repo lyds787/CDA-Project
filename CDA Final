@@ -267,158 +267,51 @@ void sign_extend(unsigned offset,unsigned *extended_value)
 
 
 /* ALU operations */
-/* 10 Points 
-- This sets the parameters for the ALU’s A, B, and ALUControl inputs.
-- If this is an R-type instruction, look at funct.
-- Call ALU() function at the end
-*/
-
-
-/*
-
-
-int ALU_operations(unsigned data1, unsigned data2, unsigned extended_value, unsigned funct, char ALUOp, char ALUSrc, unsigned *ALUresult, char *Zero) 
-{
-    unsigned operand_A, operand_B;
-
-    // Select operands based on ALUSrc
-    operand_A = (ALUSrc == 0) ? data1 : extended_value;
-    operand_B = data2;
-
-    // Check if R-type instruction and update ALUOp based on funct
-    if (ALUOp == 7) 
-{
-        switch (funct) 
-{
-            case 32:  // ADD
-                ALUOp = ADD;
-                break;
-            case 34:  // SUBTRACT
-                ALUOp = SUBTRACT;
-                break;
-            case 36:  // AND
-                ALUOp = AND;
-                break;
-            case 37:  // OR
-                ALUOp = OR;
-                break;
-            case 38:  // XOR
-                ALUOp = XOR;
-                break;
-            case 39:  // NOR
-                ALUOp = NOR;
-                break;
-            case 42:  // SLT
-                ALUOp = SLT;
-                break;
-            case 24:  // MULT
-                ALUOp = MULT;
-                break;
-            default:
-                return 1;
-        }
-    }
-
-    // Call ALU function
-    *ALUresult = ALU(operand_A, operand_B, ALUOp, Zero);
-
-    return 0;
-}
-
-
-
-
-
-}
-
-
-
-*/
-
-
-
-
-
-
-
-
 int ALU_operations(unsigned data1, unsigned data2, unsigned extended_value, unsigned funct, char ALUOp, char ALUSrc, unsigned *ALUresult, char *Zero) {
+    // Determine the operand B based on ALUSrc
+    unsigned operand_B = (ALUSrc == 1) ? extended_value : data2;
 
-    if (ALUSrc == 1) 
-{
-        data2 = extended_value;
-}
-
-    // Check the ALUOp value for R-type instructions
+    // Check if R-type instruction (ALUOp 7)
     if (ALUOp == 7) {
-
         // Determine the specific ALU operation based on the function code (funct) for R-type instructions
         switch (funct) {
-
-            case 4:
-                ALUOp = 6; // Set ALUOp to branch equal
+            case 32: // Add
+                ALUOp = 0;
                 break;
-
-            case 32:
-                ALUOp = 0; // Set ALUOp to add
+            case 34: // Subtract
+                ALUOp = 1;
                 break;
-
-            case 34:
-                ALUOp = 1; // Set ALUOp to subtract
-                break; 
-
-            case 36:
-                ALUOp = 4; // Set ALUOp to AND
+            case 42: // Set Less Than (signed)
+                ALUOp = 2;
                 break;
-
-            case 37:
-                ALUOp = 5; // Set ALUOp to OR
+            case 43: // Set Less Than (unsigned)
+                ALUOp = 3;
                 break;
-            
-            case 39:
-                ALUOp = 7; // Set ALUOp to set less than (signed)
+            case 36: // AND
+                ALUOp = 4;
                 break;
-            
-            case 42:
-                ALUOp = 2; // Set ALUOp to set less than (unsigned)
+            case 37: // OR
+                ALUOp = 5;
                 break;
-            
-            case 43:
-                ALUOp = 3; // Set ALUOp to NOR
+            case 6:  // Shift Left Extended Value by 16
+                ALUOp = 6;
                 break;
-            
+            case 39: // NOR
+                ALUOp = 7;
+                break;
             default:
-                return 1; // Return 1 for unsupported function code
-
+                return 1; // Halt for unsupported function code
         }
-        
-        // Perform ALU operation for R-type instruction
-        ALU(data1, data2, ALUOp, ALUresult, Zero);
 
+        // Call ALU function for R-type instruction
+        ALU(data1, operand_B, ALUOp, ALUresult, Zero);
     } else {
-      
-        ALU(data1, data2, ALUOp, ALUresult, Zero);
+        // Call ALU function for non-R-type instruction
+        ALU(data1, operand_B, ALUOp, ALUresult, Zero);
     }
 
- 
-    return 0;
+    return 0; // Return success
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

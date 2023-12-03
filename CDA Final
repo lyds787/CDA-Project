@@ -260,12 +260,6 @@ void read_register(unsigned r1,unsigned r2,unsigned *Reg,unsigned *data1,unsigne
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /* Sign Extend */
-/* 10 Points 
-- The 16th bit is the sign bit.
-- Recall during the partitioning function the offset has all zeros in the upper 16
-bits.
-
-*/
 void sign_extend(unsigned offset,unsigned *extended_value)
 {
     *extended_value = (offset & 0x00008000) ? (offset | 0xffff0000) : offset;
@@ -429,102 +423,62 @@ int ALU_operations(unsigned data1, unsigned data2, unsigned extended_value, unsi
 
 
 /* Read / Write Memory */
-/* 10 Points 
-- If MemWrite = 1, write to memory.
-- If MemRead = 1, read from memory
-*/
-int rw_memory(unsigned ALUresult,unsigned data2,char MemWrite,char MemRead,unsigned *memdata,unsigned *Mem)
-{
-
-    // Check for invalid address
-    if ((MemWrite || MemRead) && ALUresult % 4 != 0) {
-        // Invalid address, return a halt condition
-        return 1;
+int rw_memory(unsigned ALUresult, unsigned data2, char MemWrite, char MemRead, unsigned *memdata, unsigned *Mem) {
+    // Check if MemRead is enabled
+    if (MemRead) {
+        // Check if the address is properly aligned
+        if (ALUresult % 4 == 0) {
+            // Read from memory and store the result in memdata
+            *memdata = Mem[ALUresult >> 2];
+        } else {
+            // Improper Address, return 1 for Halt
+            return 1;
+        }
     }
 
-    // Memory Write
-    if (MemWrite && (ALUresult % 4) == 0) {
-        Mem[ALUresult >> 2] = data2;
+    // Check if MemWrite is enabled
+    if (MemWrite) {
+        // Check if the address is properly aligned
+        if (ALUresult % 4 == 0) {
+            // Write data2 to memory
+            Mem[ALUresult >> 2] = data2;
+        } else {
+            // Improper Address, return 1 for Halt
+            return 1;
+        }
     }
 
-    // Memory Read
-    if (MemRead && (ALUresult % 4) == 0) {
-        *memdata = Mem[ALUresult >> 2];
-    }
-
-    // Successful execution
+    // Successful execution, return 0
     return 0;
-
 }
 
 /* Write Register */
-/* 10 Points 
-- If RegWrite == 1 and MemtoReg == 1, then bring data from memory.
-- If RegWrite == 1 and MemtoReg == 0, then bring data from ALUresult
-*/
-void write_register(unsigned r2,unsigned r3,unsigned memdata,unsigned ALUresult,char RegWrite,char RegDst,char MemtoReg,unsigned *Reg)
-{
-////////////////////////////////////////////////////
-  if (RegWrite == 1 ) {
-        if (MemtoReg == 1) {
-            if (RegDst == 1) 
-                Reg[r3] = memdata;    //Write memdata to rd 
-            else 
-                Reg[r2] = memdata;    // Write memdata to rt
-        }
-        else {
-            if (RegDst == 1)
-                Reg [r3] = ALUresult;    // Write ALU results to rd
-            else    
-                Reg [r2] = ALUresult;    // Write ALU results to rt
-        }
+void write_register(unsigned r2, unsigned r3, unsigned memdata, unsigned ALUresult, char RegWrite, char RegDst, char MemtoReg, unsigned *Reg) {
+    // Check if writing to registers is enabled
+    if (RegWrite) {
+        // Determine the destination register based on MemtoReg and RegDst
+        unsigned destination_register = (MemtoReg == 1) ? r3 : r2;
+
+        // Write data to the appropriate register
+        Reg[destination_register] = (MemtoReg == 1) ? memdata : ALUresult;
     }
-///////////////////////////////////////////////////
+    // No action if RegWrite is not enabled
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 /* PC update */
-/* 10 Points
+void PC_update(unsigned jsec, unsigned extended_value, char Branch, char Jump, char Zero, unsigned *PC) {
+    // Always increment the PC by 4
+    *PC += 4;
 
-void PC_update(unsigned jsec,unsigned extended_value,char
-Branch,char Jump,char Zero,unsigned *PC)
-? PC = PC + 4.
-? Take note of Branch and Jump.
-? Zero and Branch tell to branch or not.
-? For jumps: Left shift bits of jsec by 2 and use upper 4 bits of PC
+    // Update the PC based on the conditions
+    if (Branch && Zero) {
+        // If branching and Zero is true, add the extended value shifted left by 2 bits
+        *PC += extended_value << 2;
+    }
 
-
-
-
-
-*/
-void PC_update(unsigned jsec,unsigned extended_value,char Branch,char Jump,char Zero,unsigned *PC)
-{
-*PC += 4;
-
-// If true update the program
-if (Jump == 1)
-{
-    // Set jump target shifted left by 2 bits ORed with the upper four bits of the original counter
-    *PC = (jsec << 2) | (*PC & 0xf0000000);
+    if (Jump) {
+        // If Jump is true, set the PC to the jump target shifted left by 2 bits
+        // ORed with the upper four bits of the original PC
+        *PC = (jsec << 2) | (*PC & 0xF0000000);
+    }
 }
-
-// If both are true
-if (Zero == 1 && Branch == 1)
-{
-    // Add the sign-extended value multiplied by 4 to the program counter by shifting left by 2 bits
-    *PC += (extended_value << 2);
-}
-}
-

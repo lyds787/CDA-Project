@@ -4,40 +4,39 @@
 /* 10 Points */
 void ALU(unsigned A,unsigned B,char ALUControl,unsigned *ALUresult,char *Zero)
 {
-switch (ALUControl) {
-    case 0:
-            *ALUresult = A + B;  //addition
-            break;
-    case 1:
-            *ALUresult = A - B;  //subtraction
-            break;
-    case 2:
-            int A = A;          // less than int
-            int B = B;
-            if (A < B)
-                *ALUresult = 1;
-            else
-                *ALUresult = 0;
-            break;
-    case 3:
-            if (A < B)        // less than unsigned
-                *ALUresult = 1;
-            else
-                *ALUresult = 0;
-            break;
-    case 4:
-        *ALUresult = A & B;    //AND
-            break;
-    case 5:
-        *ALUresult = A | B;    //XOR
-            break;
-    case 6:
-       *ALUresult = (B << 16);      //  SHIFT Not confident!
-            break;
-        case 7:                //NOT
-            *ALUresult = ~A;
-            break;
-    }
+    //use switch case for to determine ALUresult based on ALUControl (Which operation is being executed)
+    switch ((int)ALUControl) {
+        case 0:                      //ALUControl = 000
+                *ALUresult = A + B;  //addition
+                break;
+        case 1:                      //ALUControl = 001
+                *ALUresult = A - B;  //subtraction
+                break;
+        case 2:                     //ALUControl = 010
+                if ((signed) A < (signed) B){// is A less than B, for signed values
+                    *ALUresult = 1;     //assert as 1 if true
+                } else {
+                    *ALUresult = 0;     //0 if false
+                } break;
+        case 3:                    //ALUControl = 011
+                if ((unsigned) A < (unsigned) B){        // is A less than B, for unsigned values
+                    *ALUresult = 1;     //1 if true
+                } else {
+                    *ALUresult = 0;     //0 if false
+                } break;
+        case 4:                    //ALUControl = 100
+            *ALUresult = A & B;    //A AND B
+                break;
+        case 5:                    //ALUControl = 101
+            *ALUresult = A | B;    //A XOR B
+                break;
+        case 6:                    //ALUControl = 110
+        *ALUresult = (B << 16); //  SHIFT B left by 16 bits
+                break;
+        case 7:                    //ALUControl = 111
+                *ALUresult = ~A;   // NOT A
+                break;
+        }
     if (*ALUresult == 0) {    // if *ALUresult is 0, set *Zero to 1
         *Zero = 1;
     } else {                  // if *ALUresult is 1, set *Zero to 0
@@ -48,22 +47,22 @@ switch (ALUControl) {
    
 /* instruction fetch */
 /* 10 Points */
+//////////////////////////////////////////////////////////////////////
 int instruction_fetch(unsigned PC,unsigned *Mem,unsigned *instruction)
 {
+    unsigned PCShift = PC >> 2;
                                     // Check for word alignment
-    if (PC & 0x3) {
-        return 1;                 // Misalignment, return 1 for halt condition
+    if (PC % 4 == 0) {              //if divisible by 4 it is in the correct word alignment
+        *instruction = Mem[PCShift];
+        return 0;                   
+    } else {                        // else it is misalignment, return 1 for halt condition
+
+        return 1;                   // Halt condition, return 1
     }
 
-                                // Check for halt condition
-    if (PC > 65535) {
-        return 1;                 // Halt condition, return 1
-    }
 
-    *instruction = Mem[PC >> 2};
-
-    return 0;
 }
+
 
 /* instruction partition */
 /* 10 Points 
@@ -83,47 +82,26 @@ unsigned op, // instruction [31-26]
     funct, // instruction [5-0]
     offset, // instruction [15-0]
     jsec; // instruction [25-0]
-*/
+    */
+/////////////////////////////////////////////////////////////////////
 
 void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1,unsigned *r2, unsigned *r3, unsigned *funct, unsigned *offset, unsigned *jsec)
 {
-    *op = (instruction >> 26);    //check again
+    *op = (instruction >> 26);    
     
-    *r1 = (instruction >> 21) & 0b11111;
+    *r1 = (instruction >> 21) & 0b11111;    //5 bits
     
-    *r2 = (instruction >> 16) & 0b11111;
+    *r2 = (instruction >> 16) & 0b11111;    //5 bits
     
-    *r3 = (instruction >> 11) & 0b11111;
+    *r3 = (instruction >> 11) & 0b11111;    //5 bits
     
-    *funct = instruction & (0b111111);
+    *funct = instruction & (0b111111);      //6 bits
     
-    *offset = instruction & (0b1111111111111111);
+    *offset = instruction & (0b1111111111111111);   //16 bits
     
-    *jsec = instruction & (0b11111111111111111111111111);
+    *jsec = instruction & (0b11111111111111111111111111);   //26 bits
 
 }
-
-
-
-
-
-/*
-
-void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1, unsigned *r2, unsigned *r3,
-                            unsigned *funct, unsigned *offset, unsigned *jsec) {
-    *op = instruction >> 26;
-    *r1 = (instruction & (0b11111 << 20)) >> 21;
-    *r2 = (instruction & (0b11111 << 15)) >> 16;
-    *r3 = (instruction & (0b11111 << 10)) >> 11;
-    *funct = instruction & (0b111111);
-    *offset = instruction & (0b1111111111111111);
-    *jsec = instruction & (0b11111111111111111111111111);
-}
-
-*/
-
-
-
 
 
 
@@ -147,11 +125,12 @@ char ALUSrc;
 char RegWrite;
 }struct_controls;
 */
+//////////////////////////////////////////////////////////////////////////////////
 
 
-int halt = 0;
-switch (op) {
-    case 0:
+//int halt = 0;
+switch (op) {           //based on op codes in MIPS reference guide and instructions to be implemented
+    case 0:             // 0 = 000 000 = R-format
         controls->RegDst = 1;
         controls->Jump = 0;
         controls->Branch = 0;
@@ -162,24 +141,37 @@ switch (op) {
         controls->ALUSrc = 0;
         controls->RegWrite = 1;
             break;
-    case 1:
+    case 2:             // 2 = 000 010 = jump
+        controls->RegDst = 0;
+        controls->Jump = 1;
+        controls->Branch = 0;
+        controls->MemRead = 0;
+        controls->MemtoReg = 0;
+        controls->ALUOp = 0;
+        controls->MemWrite = 0;
+        controls->ALUSrc = 0;
+        controls->RegWrite = 0;
+
+            break;
+    case 4:             // 4 = 000 100 = branch equal
+        controls->RegDst = 2;
+        controls->Jump = 0;
+        controls->Branch = 1;
+        controls->MemRead = 0;
+        controls->MemtoReg = 2;
+        controls->ALUOp = 1;
+        controls->MemWrite = 0;
+        controls->ALUSrc = 0;
+        controls->RegWrite = 0;
+
+          
+            break;
+    case 8:             // 8 = 001 000 = add immediate
         controls->RegDst = 0;
         controls->Jump = 0;
         controls->Branch = 0;
         controls->MemRead = 0;
         controls->MemtoReg = 0;
-        controls->ALUOp = 5;
-        controls->MemWrite = 0;
-        controls->ALUSrc = 1;
-        controls->RegWrite = 1;
-
-            break;
-    case 2:
-        controls->RegDst = 0;
-        controls->Jump = 0;
-        controls->Branch = 0;
-        controls->MemRead = 1;
-        controls->MemtoReg = 1;
         controls->ALUOp = 0;
         controls->MemWrite = 0;
         controls->ALUSrc = 1;
@@ -187,19 +179,7 @@ switch (op) {
 
           
             break;
-    case 3:
-        controls->RegDst = 2;
-        controls->Jump = 0;
-        controls->Branch = 0;
-        controls->MemRead = 0;
-        controls->MemtoReg = 2;
-        controls->ALUOp = 0;
-        controls->MemWrite = 1;
-        controls->ALUSrc = 1;
-        controls->RegWrite = 0;
-
-            break;
-    case 4:
+    case 10:           // 10 = 001 010 = set less than immediate
         controls->RegDst = 0;
         controls->Jump = 0;
         controls->Branch = 0;
@@ -211,53 +191,66 @@ switch (op) {
         controls->RegWrite = 1;
 
             break;
-    case 5:
-        controls->RegDst = 2;
-        controls->Jump = 0;
-        controls->Branch = 1;
-        controls->MemRead = 0;
-        controls->MemtoReg = 2;
-        controls->ALUOp = 0;
-        controls->MemWrite = 0;
-        controls->ALUSrc = 1;
-        controls->RegWrite = 0;
-
-            break;
-    case 6:
+    case 11:            // 11 = 001 011 = set less than immediate (unsigned)
         controls->RegDst = 0;
         controls->Jump = 0;
-        controls->Branch = 1;
+        controls->Branch = 0;
+        controls->MemRead = 0;
+        controls->MemtoReg = 0;
+        controls->ALUOp = 3;
+        controls->MemWrite = 0;
+        controls->ALUSrc = 1;
+        controls->RegWrite = 1;
+
+            break;
+    case 15:            // 15 = 001 111 = load upper immediate
+        controls->RegDst = 0;
+        controls->Jump = 0;
+        controls->Branch = 0;
         controls->MemRead = 0;
         controls->MemtoReg = 0;
         controls->ALUOp = 6;
         controls->MemWrite = 0;
         controls->ALUSrc = 1;
-        controls->RegWrite = 0;
+        controls->RegWrite = 1;
 
             break;
-    case 7:       
-        controls->RegDst = 2;
-        controls->Jump = 1;
-        controls->Branch = 2;
-        controls->MemRead = 2;
-        controls->MemtoReg = 2;
+    case 35:            // = 100 011 = load word
+        controls->RegDst = 0;
+        controls->Jump = 0;
+        controls->Branch = 0;
+        controls->MemRead = 1;
+        controls->MemtoReg = 1;
         controls->ALUOp = 0;
         controls->MemWrite = 0;
-        controls->ALUSrc = 2;
+        controls->ALUSrc = 1;
+        controls->RegWrite = 1;
+
+            break;
+    case 43:            // 43 = 101 011 = store word
+        controls->RegDst = 2;
+        controls->Jump = 0;
+        controls->Branch = 0;
+        controls->MemRead = 0;
+        controls->MemtoReg = 2;
+        controls->ALUOp = 0;
+        controls->MemWrite = 1;
+        controls->ALUSrc = 1;
         controls->RegWrite = 0;
 
             break;
     default:
-            halt = 1;
+            return 1;       //return 1 for halt
     }
 
-    return halt;
+    return 0;               //else return 0
 }
 
 
 
 /* Read Register */
 /* 5 Points */
+/////////////////////////////////////////////////////////////////////////
 void read_register(unsigned r1,unsigned r2,unsigned *Reg,unsigned *data1,unsigned *data2)
 {
     // Read data from the first register
@@ -265,7 +258,7 @@ void read_register(unsigned r1,unsigned r2,unsigned *Reg,unsigned *data1,unsigne
     // Read data from the second register
     *data2 = Reg[r2];
 }
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /* Sign Extend */
 /* 10 Points 
 - The 16th bit is the sign bit.

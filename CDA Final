@@ -43,11 +43,10 @@ void ALU(unsigned A,unsigned B,char ALUControl,unsigned *ALUresult,char *Zero)
         *Zero = 0;
     }
 }
-            
+//////////////////////////////////////////////////////////////////////
    
 /* instruction fetch */
 /* 10 Points */
-//////////////////////////////////////////////////////////////////////
 int instruction_fetch(unsigned PC,unsigned *Mem,unsigned *instruction)
 {
     unsigned PCShift = PC >> 2;
@@ -63,7 +62,7 @@ int instruction_fetch(unsigned PC,unsigned *Mem,unsigned *instruction)
 
 }
 
-
+//////////////////////////////////////////////////////////////////////
 /* instruction partition */
 /* 10 Points 
 - Partition instruction into several parts (op, r1, r2, r3, funct, offset, jsec).
@@ -83,7 +82,7 @@ unsigned op, // instruction [31-26]
     offset, // instruction [15-0]
     jsec; // instruction [25-0]
     */
-/////////////////////////////////////////////////////////////////////
+
 
 void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1,unsigned *r2, unsigned *r3, unsigned *funct, unsigned *offset, unsigned *jsec)
 {
@@ -105,7 +104,7 @@ void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1,unsi
 
 
 
-
+//////////////////////////////////////////////////////////////////////
 /* instruction decode */
 /* 15 Points */
 
@@ -125,8 +124,6 @@ char ALUSrc;
 char RegWrite;
 }struct_controls;
 */
-//////////////////////////////////////////////////////////////////////////////////
-
 
 //int halt = 0;
 switch (op) {           //based on op codes in MIPS reference guide and instructions to be implemented
@@ -247,10 +244,9 @@ switch (op) {           //based on op codes in MIPS reference guide and instruct
 }
 
 
-
+//////////////////////////////////////////////////////////////////////
 /* Read Register */
 /* 5 Points */
-/////////////////////////////////////////////////////////////////////////
 void read_register(unsigned r1,unsigned r2,unsigned *Reg,unsigned *data1,unsigned *data2)
 {
     // Read data from the first register
@@ -258,19 +254,31 @@ void read_register(unsigned r1,unsigned r2,unsigned *Reg,unsigned *data1,unsigne
     // Read data from the second register
     *data2 = Reg[r2];
 }
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
 /* Sign Extend */
+/*
+The 16th bit is the sign bit.
+Recall during the partitioning function the offset has all zeros in the upper 16
+bits
+*/
 void sign_extend(unsigned offset,unsigned *extended_value)
 {
+// Check if the most significant bit (MSB) of the offset is set
+// If MSB is set, perform sign extension by ORing with 0xffff0000
+// If MSB is not set, no sign extension is needed
     *extended_value = (offset & 0x00008000) ? (offset | 0xffff0000) : offset;
 }
 
-
+//////////////////////////////////////////////////////////////////////
 /* ALU operations */
+/*
+This sets the parameters for the ALU’s A, B, and ALUControl inputs.
+If this is an R-type instruction, look at funct.
+Call ALU() function at the end
+*/
 int ALU_operations(unsigned data1, unsigned data2, unsigned extended_value, unsigned funct, char ALUOp, char ALUSrc, unsigned *ALUresult, char *Zero) {
     // Determine the operand B based on ALUSrc
     unsigned operand_B = (ALUSrc == 1) ? extended_value : data2;
-
     // Check if R-type instruction (ALUOp 7)
     if (ALUOp == 7) {
         // Determine the specific ALU operation based on the function code (funct) for R-type instructions
@@ -314,8 +322,12 @@ int ALU_operations(unsigned data1, unsigned data2, unsigned extended_value, unsi
 }
 
 
-
+//////////////////////////////////////////////////////////////////////
 /* Read / Write Memory */
+/*
+If MemWrite = 1, write to memory.
+If MemRead = 1, read from memory.
+*/
 int rw_memory(unsigned ALUresult, unsigned data2, char MemWrite, char MemRead, unsigned *memdata, unsigned *Mem) {
     // Check if MemRead is enabled
     if (MemRead) {
@@ -344,31 +356,49 @@ int rw_memory(unsigned ALUresult, unsigned data2, char MemWrite, char MemRead, u
     // Successful execution, return 0
     return 0;
 }
-
+//////////////////////////////////////////////////////////////////////
 /* Write Register */
+/*
+If RegWrite == 1 and MemtoReg == 1, then bring data from memory.
+If RegWrite == 1 and MemtoReg == 0, then bring data from ALUresult.
+*/
 void write_register(unsigned r2, unsigned r3, unsigned memdata, unsigned ALUresult, char RegWrite, char RegDst, char MemtoReg, unsigned *Reg) {
     // Check if writing to registers is enabled
     // Determine the destination register based on MemtoReg and RegDst
     //then write data to the appropriate register
     if (RegWrite == 1) {
         if (MemtoReg == 1){
+    // Memory-to-register operation
             if (RegDst == 0){
+    // Write memdata to register r2
                 Reg[r2] = memdata;
             } else if (RegDst == 1){
+    // Write memdata to register r3
                 Reg[r3] = memdata;
             };
         } else if (MemtoReg == 0){
+    // ALU-to-register operation
             if (RegDst == 0){
+    // Write ALUresult to register r2
                 Reg[r2] = ALUresult;
             } else if (RegDst == 1){
+    // Write ALUresult to register r3
                 Reg[r3] = ALUresult;
             };
         }
     }
     // No action if RegWrite is not enabled
 }
-
+//////////////////////////////////////////////////////////////////////
 /* PC update */
+/*
+PC = PC + 4.
+Take note of Branch and Jump.
+Zero and Branch tell to branch or not.
+For jumps: Left shift bits of jsec by 2 and use upper 4 bits of PC.
+*/
+
+
 void PC_update(unsigned jsec, unsigned extended_value, char Branch, char Jump, char Zero, unsigned *PC) {
     // Always increment the PC by 4
     *PC += 4;
@@ -385,3 +415,4 @@ void PC_update(unsigned jsec, unsigned extended_value, char Branch, char Jump, c
         *PC = (jsec << 2) | (*PC & 0xF0000000);
     }
 }
+//////////////////////////////////////////////////////////////////////
